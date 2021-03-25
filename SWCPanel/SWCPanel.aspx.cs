@@ -1,41 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace SWCPanel
 {
     public partial class SWCPanel : System.Web.UI.Page
     {
+		private static HttpClient client;
+		public static panelData panel;
 
-        public DateTime CGT { get; set; }
-
-        protected void Page_Load(object sender, EventArgs e)
+		protected void Page_Load(object sender, EventArgs e)
         {
-
-        }
+			client = new HttpClient();
+			panelData panel = new panelData();
+		}
 
         protected void btnUpdateTime_Click(object sender, EventArgs e)
         {
 
         }
-    }
-
-	class runProgram
-	{
-
-
-		static HttpClient client = new HttpClient();
+		
 
 		static async Task RunAsync()
 		{
+			
 			client.BaseAddress = new Uri("https://www.swcombine.com/ws/v1.0/api/");
-			CGT = getCGT();
+			client.DefaultRequestHeaders.Accept.Clear();
+
 		}
 
-		static async getCGT()
+		static async void pullCGT()
 		{
 
 			//URL: https://www.swcombine.com/ws/v1.0/api/time/cgt/
@@ -57,12 +53,11 @@ namespace SWCPanel
 				var readTask = result.Content.ReadAsAsync(DateTime);
 				readTask.Wait();
 
-				temp = readTask.Result;
-				return temp;
+				
 			}
 		}
 
-		static async convertCGT()
+		static async void convertCGT()
 		{
 			DateTime current = DateTime.Now;
 			var responseTask = client.PostAsync("time/cgt/", current);
@@ -75,12 +70,20 @@ namespace SWCPanel
 				var readTask = result.Content.ReadAsAsync(DateTime);
 				readTask.Wait();
 
-				temp = readTask.Result;
+				panel.CGT = readTask.Result;
 				return temp;
 			}
 		}
 
 	}
-}
 
+	public class panelData
+    {
+		public DateTime CGT;
+
+        panelData()
+        {
+			CGT = DateTime.Now;
+        }
+	}
 }
