@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace SWCPanel
 {
@@ -14,20 +15,24 @@ namespace SWCPanel
 		protected void Page_Load(object sender, EventArgs e)
         {
 			client = new HttpClient();
+			client.BaseAddress = new Uri("https://www.swcombine.com/ws/v1.0/api/");
+			client.DefaultRequestHeaders.Accept.Clear();
 			panelData panel = new panelData();
+			lblSET.Text = DateTime.Now.ToString();
 		}
 
         protected void btnUpdateTime_Click(object sender, EventArgs e)
         {
+			pullCGT();
+			//TODO patch this for actual async method
+		}
 
-        }
-		
 
 		static async Task RunAsync()
 		{
 			
-			client.BaseAddress = new Uri("https://www.swcombine.com/ws/v1.0/api/");
-			client.DefaultRequestHeaders.Accept.Clear();
+			
+			
 
 		}
 
@@ -41,8 +46,6 @@ namespace SWCPanel
 			//Permissions:	N / A
 			//Returns: 200 OK: Returns current CGT value
 
-			DateTime temp;
-
 			var responseTask = client.GetAsync("time/cgt/");
 			responseTask.Wait();
 
@@ -50,40 +53,54 @@ namespace SWCPanel
 			if (result.IsSuccessStatusCode)
 			{
 
-				var readTask = result.Content.ReadAsAsync(DateTime);
+				var readTask = result.Content.ReadAsStringAsync();
 				readTask.Wait();
-
 				
+
+				String holderString = readTask.Result;
+				var cultureInfo = new CultureInfo("en-US");
+				panel.CGT = DateTime.Parse(holderString, cultureInfo);
+
 			}
+
+			
 		}
 
 		static async void convertCGT()
 		{
-			DateTime current = DateTime.Now;
-			var responseTask = client.PostAsync("time/cgt/", current);
+			String current = DateTime.Now.ToString();
+			var sendContent = new StringContent(current);
+			var responseTask = client.PostAsync("time/cgt/", sendContent);
 			responseTask.Wait();
 
 			var result = responseTask.Result;
 			if (result.IsSuccessStatusCode)
 			{
 
-				var readTask = result.Content.ReadAsAsync(DateTime);
+				var readTask = result.Content.ReadAsStringAsync();
 				readTask.Wait();
 
-				panel.CGT = readTask.Result;
-				return temp;
+				String holderString = readTask.Result;
+				var cultureInfo = new CultureInfo("en-US");
+				panel.CGT = DateTime.Parse(holderString, cultureInfo);
 			}
 		}
 
-	}
-
-	public class panelData
-    {
-		public DateTime CGT;
-
-        panelData()
+        protected void CheckBoxList1_SelectedIndexChanged(object sender, EventArgs e)
         {
-			CGT = DateTime.Now;
+
+        }
+    }
+
+    public class panelData
+    {
+		public DateTime CGT;//combine galactic time
+		public DateTime SET;//standard earth time
+
+        public panelData()
+        {
+			CGT = DateTime.UtcNow;
+			SET = DateTime.Now;
         }
 	}
 }

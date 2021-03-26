@@ -11,7 +11,7 @@ namespace SWCPanel
 {
 
 
-    public partial class WebForm1
+    public partial class SWCPanel
     {
 
         /// <summary>
@@ -22,6 +22,15 @@ namespace SWCPanel
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+
+        /// <summary>
+        /// lblSET control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSET;
 
         /// <summary>
         /// lblCGT control.

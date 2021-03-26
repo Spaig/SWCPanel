@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="SWCPanel.aspx.cs" Inherits="SWCPanel.WebForm1" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="SWCPanel.aspx.cs" Inherits="SWCPanel.SWCPanel" %>
 
 <!DOCTYPE html>
 
@@ -8,9 +8,13 @@
 </head>
 <body>
     <form id="form1" runat="server">   
+        Current Earth Time:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <asp:Label ID="lblSET" runat="server" Text="earthlings"></asp:Label>
+        <br />
         Combine Galactic Time:
-        <asp:Label ID="lblCGT" runat="server" Text="Time!"></asp:Label>
-    &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        <asp:Label ID="lblCGT" runat="server" Text="time_placeholder"></asp:Label>
+&nbsp;&nbsp;
         <asp:Button ID="btnUpdateTime" runat="server" OnClick="btnUpdateTime_Click" Text="Time Sync" />
         <br />
         <br />
